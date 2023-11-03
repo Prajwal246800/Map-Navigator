@@ -1,0 +1,9 @@
+1
+Name : Kolar
+Connects : Bevahalli , Mulbagal
+2
+Name : Mulbagal
+Connects : Bevahalli , Kolar
+3
+Name : Bevahalli
+Connects : Mulbagal , Kolar

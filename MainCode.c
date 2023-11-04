@@ -23,7 +23,6 @@ typedef struct Graph
     Node** adjLists;
     Place* places;
 }Graph;
-
 Node* createNode(int vertex)
 {
     Node* newNode = (Node*)malloc(sizeof(Node));
@@ -31,49 +30,7 @@ Node* createNode(int vertex)
     newNode->next = NULL;
     return newNode;
 }
-
-
-
-void addPlaceToGraph(Graph* graph , PlaceArray placeArray[])
-{
-    int newNumVertices = graph->numPlaces + 1;
-    Graph* newGraph = (Graph*)malloc(sizeof(Graph));
-    newGraph->numPlaces = newNumVertices;
-    newGraph->adjLists = (Node**)malloc(newNumVertices * sizeof(Node*));
-    newGraph->places = (Place*)malloc(newNumVertices * sizeof(Place));
-    for (int i = 0; i < graph->numPlaces; i++)
-    {
-        newGraph->places[i] = graph->places[i];
-        newGraph->adjLists[i] = graph->adjLists[i];
-    }
-    printf("Enter Name of the new place:\n");
-    scanf("%s", newGraph->places[newNumVertices - 1].name);
-    newGraph->adjLists[newNumVertices - 1] = NULL;
-    int connectChoice;
-    do {
-        printf("Connect to an existing place (Enter the place number to connect, or -1 to finish): ");
-        scanf("%d", &connectChoice);
-        if (connectChoice >= 0 && connectChoice < newNumVertices - 1) {
-            Node* newNode = createNode(connectChoice);
-            newNode->next = newGraph->adjLists[newNumVertices - 1];
-            newGraph->adjLists[newNumVertices - 1] = newNode;
-
-            // Also, add a connection from the existing place to the new place
-            newNode = createNode(newNumVertices - 1);
-            newNode->next = newGraph->adjLists[connectChoice];
-            newGraph->adjLists[connectChoice] = newNode;
-        }
-    } while (connectChoice != -1);
-    // Free memory of the old graph and assign the new graph to the input pointer
-    free(graph->places);
-    free(graph->adjLists);
-    free(graph);
-    *graph = *newGraph;
-}
-
-
-
-Graph* createGraph(int numPlaces)
+Graph* CreateGraph(int numPlaces)
 {
     Graph* graph = (Graph*)malloc(sizeof(Graph));
     graph->numPlaces = numPlaces;
@@ -113,10 +70,107 @@ Graph* createGraph(int numPlaces)
     fclose(file);
     return graph;
 }
+Graph* createGraph(int numPlaces) {
+    Graph* graph = (Graph*)malloc(sizeof(Graph));
+    graph->numPlaces = numPlaces;
+    graph->adjLists = (Node**)malloc(numPlaces * sizeof(Node*));
+    graph->places = (Place*)malloc(numPlaces * sizeof(Place));
+    FILE* file = fopen("Sample.txt", "r");
+    if (file == NULL) {
+        printf("Error opening the file for reading.\n");
+        return NULL;
+    }
+    int vertex;
+    for (int i = 0; i < numPlaces; i++) {
+        if (fscanf(file, "%d", &vertex) != 1)
+        {
+            printf("Error: Could not read the place number.\n");
+            fclose(file);
+            free(graph->places);
+            free(graph->adjLists);
+            free(graph);
+            return NULL;
+        }
+        if (vertex != i + 1) {
+            printf("Error: Place order in the file does not match the expected order.\n");
+            fclose(file);
+            free(graph->places);
+            free(graph->adjLists);
+            free(graph);
+            return NULL;
+        }
+        char label[20];
+        char name[50];
+        // Read and validate the "Name :" label
+        if (fscanf(file, "%s", label) != 1 || strcmp(label, "Name") != 0) {
+            printf("Error: Expected 'Name' label.\n");
+            fclose(file);
+            free(graph->places);
+            free(graph->adjLists);
+            free(graph);
+            return NULL;
+        }
+        // Read the name of the place
+        fscanf(file, " : %49[^\n]", name);
+        strcpy(graph->places[i].name, name);
+        // Read and validate the "Connects :" label
+        if (fscanf(file, "%s", label) != 1 || strcmp(label, "Connects") != 0) {
+            printf("Error: Expected 'Connects' label.\n");
+            fclose(file);
+            free(graph->places);
+            free(graph->adjLists);
+            free(graph);
+            return NULL;
+        }
+        int connectedVertex;
+        while (fscanf(file, "%d", &connectedVertex) == 1) {
+            Node* newNode = createNode(connectedVertex - 1);
+            newNode->next = graph->adjLists[i];
+            graph->adjLists[i] = newNode;
+        }
+    }
+    fclose(file);
+    return graph;
+}
 
-
-
-
+Graph* addPlaceToGraph(Graph* graph , PlaceArray placeArray[])
+{
+    printf("Entered\n");
+    int newNumVertices = graph->numPlaces + 1;
+    printf("New Graph Created 1\n");
+    Graph* newGraph = (Graph*)malloc(sizeof(Graph));
+    newGraph->numPlaces = newNumVertices;
+    newGraph->adjLists = (Node**)malloc(newNumVertices * sizeof(Node*));
+    printf("New Graph Created 2\n");
+    newGraph->places = (Place*)malloc(newNumVertices * sizeof(Place));
+    printf("New Graph Created 3\n");
+    for (int i = 0; i < graph->numPlaces; i++)
+    {
+        printf("Asigning Old Graph To New Graph.....\n");
+        newGraph->places[i] = graph->places[i];
+        newGraph->adjLists[i] = graph->adjLists[i];
+    }
+    printf("Enter Name of the new place:\n");
+    scanf("%s", newGraph->places[newNumVertices - 1].name);
+    newGraph->adjLists[newNumVertices - 1] = NULL;
+    int connectChoice;
+    do {
+        printf("Connect to an existing place (Enter the place number to connect, or -1 to finish): ");
+        scanf("%d", &connectChoice);
+        if (connectChoice >= 0 && connectChoice < newNumVertices - 1) {
+            Node* newNode = createNode(connectChoice);
+            newNode->next = newGraph->adjLists[newNumVertices - 1];
+            newGraph->adjLists[newNumVertices - 1] = newNode;
+            newNode = createNode(newNumVertices - 1);
+            newNode->next = newGraph->adjLists[connectChoice];
+            newGraph->adjLists[connectChoice] = newNode;
+        }
+    } while (connectChoice != -1);
+    free(graph->places);
+    free(graph->adjLists);
+    free(graph);
+    return newGraph;
+}
 void addEdge(Graph* graph, int src, int dest)
 {
     Node* newNode = createNode(dest);
@@ -176,6 +230,14 @@ void extractPlaceNames(const char* filename, struct PlaceArray placeArray[], int
     }
     fclose(file);
 }
+void DisplayAllPlace(Graph *graph,int numPlaces)
+{
+    PlaceArray places[MAX_PLACES];
+    extractPlaceNames("Sample.txt", places , &numPlaces);
+    for (int i = 0; i < numPlaces; i++) {
+        printf("%d: %s\n", i + 1, places[i].name);
+    }
+}
 
 int main()
 {
@@ -183,21 +245,29 @@ int main()
     PlaceArray placeArray[MAX_PLACES];
     int numPlaces;
     extractPlaceNames("Sample.txt", placeArray, &numPlaces);
-    // printf("Extracted place names:\n");
-    // for (int i = 0; i < numPlaces; i++) {
-    //     printf("%d: %s\n", i + 1, placeArray[i].name);
-    // }
-
+    printf("The Number Of Places Is %d \n", numPlaces);
     Graph *graph = createGraph(numPlaces);
-
     int choice = 0;
     do
     {
-        printf("Enter Your Choice : \n\t 1.Add New Place \n\t 2.Add New Road \n\t 3.Delete Existing Place \n\t 4.Delete Existing Road \n\t 5.Display All Places \n\t 6.exit");
+        choice:
+        printf("Enter Your Choice : \n\t 1.Add New Place \n\t 2.Add New Road \n\t 3.Delete Existing Place \n\t 4.Delete Existing Road \n\t 5.Display All Places \n\t 6.exit \n");
+        scanf("%d", &choice);
         switch(choice)
         {
             case 1:
-                addPlaceToGraph(graph , placeArray);
+                graph = addPlaceToGraph(graph , placeArray);
+                saveGraphToFile(graph);
+                break;
+            case 5:
+                DisplayAllPlace(graph , numPlaces);
+                break;
+            case 6:
+                exit(0);
+            default:
+                printf("Invalid Choice Please Enter Valid Choice.\n");
+                goto choice;
+                break;
         }
     }while(choice!=0);
 

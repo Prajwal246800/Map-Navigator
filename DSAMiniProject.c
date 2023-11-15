@@ -94,22 +94,6 @@ void deletePlace(int index)
     fclose(file);
 }
 
-void initGraph()
-{
-    g.numPlaces = 0;
-    FILE *file = fopen("PlaceInfo.txt", "r");
-    if (file != NULL)
-    {
-        char line[50];
-        while (fgets(line, sizeof(line), file))
-        {
-            line[strcspn(line, "\n")] = 0;
-            addPlace(line);
-        }
-        fclose(file);
-    }
-}
-
 void displayPlaces()
 {
     printf("\nPlaces in the map:\n");
@@ -218,7 +202,6 @@ void shortestPath(int from, int to, int distance[])
 
 int main()
 {
-    initGraph();
     int choice;
     char newPlace[50];
     int from, to, index;

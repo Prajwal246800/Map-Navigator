@@ -44,8 +44,7 @@ The program stores place information in a file named PlaceInfo.txt. This file ho
 ### Finding Shortest Route
 ```9. Display Shortest Route```
 
-```Enter the indices of the places to find the shortest path (separated by a space): 0
- 2```
+```Enter the indices of the places to find the shortest path (separated by a space): 0 2```
 ```Shortest path: PlaceA <- PlaceB <- PlaceC```
 
 

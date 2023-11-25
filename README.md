@@ -49,7 +49,7 @@ The program stores place information in a file named PlaceInfo.txt. This file ho
 
 
 Clone the Repository:
-  git clone https://github.com/Prajwal246800/DSA-MiniProject-SEM-3.git
+  git clone https://github.com/Prajwal246800/DSA-SEM3-miniProject.git
   
 Navigate to the Directory:
   cd DSA-MiniProject-SEM-3

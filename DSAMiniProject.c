@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#define MAX_PLACES 100
+#define MAX_PLACES 50
 
 typedef struct
 {

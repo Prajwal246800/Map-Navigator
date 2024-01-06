@@ -1,4 +1,4 @@
-# DSA-SEM3-miniProject
+# Map-Navigator
 # Map Management System
 
 This project implements a map management system in C that allows users to manage places and routes between them within a map.
@@ -50,13 +50,13 @@ The program stores place information in a file named PlaceInfo.txt. This file ho
 
 
 Clone the Repository:
-  git clone https://github.com/Prajwal246800/DSA-SEM3-miniProject.git
+  git clone https://github.com/Prajwal246800/Map-Navigator.git
   
 Navigate to the Directory:
-  cd DSA-MiniProject-SEM-3
+  cd Map-Navigator
   
 Compile the Code:
-  gcc DSAMiniProject.c -o map_navigation
+  gcc Navigator.c -o map_navigation
   
 Run the Program:
   ./map_navigation
